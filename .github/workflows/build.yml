@@ -84,17 +84,16 @@ jobs:
           source ./buildenv.sh ${{ matrix.target }}
           ./scripts/make_rom.sh --force
 
-      - name: Upload to GoFile
+      - name: Upload to GitHub Actions Artifacts
         run: |
-          ZIP_FILE=$(find out -maxdepth 1 -type f -name "*.md5" | head -n 1)
+          FILE=$(find out -maxdepth 1 -type f -name "*.tar.md5" | head -n 1)
+          echo "Uploading $FILE as artifact..."
+          ARTIFACT_NAME=$(basename "$FILE" .tar.md5)
+          echo "Artifact name: $ARTIFACT_NAME"
+          echo "file=$FILE" >> "$GITHUB_ENV"
+          echo "artifact_name=$ARTIFACT_NAME" >> "$GITHUB_ENV"
 
-          RESPONSE=$(curl -s -F "file=@$ZIP_FILE" -F "token=${{ secrets.GOFILE_TOKEN }}" -F "folderId=${{ secrets.GOFILE_FOLDER_ID }}" "https://upload-eu-par.gofile.io/uploadFile")
-
-          echo "Uploaded successfully! Download link:"
-          echo "$RESPONSE" | jq -r '.data.downloadPage'
-
-          echo "MD5:"
-          md5sum "$ZIP_FILE"
-
-          echo "SHA256:"
-          sha256sum "$ZIP_FILE"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.artifact_name }}
+          path: ${{ env.file }}
