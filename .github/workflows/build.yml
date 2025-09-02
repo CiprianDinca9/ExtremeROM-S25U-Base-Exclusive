@@ -84,16 +84,9 @@ jobs:
           source ./buildenv.sh ${{ matrix.target }}
           ./scripts/make_rom.sh --force
 
-      - name: Upload to GitHub Actions Artifacts
-        run: |
-          FILE=$(find out -maxdepth 1 -type f -name "*.tar" | head -n 1)
-          echo "Uploading $FILE as artifact..."
-          ARTIFACT_NAME=$(basename "$FILE" .tar)
-          echo "Artifact name: $ARTIFACT_NAME"
-          echo "file=$FILE" >> "$GITHUB_ENV"
-          echo "artifact_name=$ARTIFACT_NAME" >> "$GITHUB_ENV"
+- name: Upload ROM artifact
+  uses: actions/upload-artifact@v4
+  with:
+    name: rom
+    path: out/*.tar
 
-      - uses: actions/upload-artifact@v4
-        with:
-          name: ${{ env.artifact_name }}
-          path: ${{ env.file }}
