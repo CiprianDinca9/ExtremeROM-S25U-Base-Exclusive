@@ -84,9 +84,9 @@ jobs:
           source ./buildenv.sh ${{ matrix.target }}
           ./scripts/make_rom.sh --force
 
-- name: Upload ROM artifact
-  uses: actions/upload-artifact@v4
-  with:
-    name: rom
-    path: out/*.tar
+      - name: Upload ROM artifact
+        uses: actions/upload-artifact@v4
+        with:
+              name: rom
+              path: out/*.tar
 
