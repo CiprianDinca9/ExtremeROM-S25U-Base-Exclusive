@@ -18,6 +18,8 @@
 
 set -Eeo pipefail
 
+source "$SRC_DIR/scripts/utils/build_utils.sh" || exit 1
+
 # [
 GENERATE_LPMAKE_OPT()
 {
@@ -102,7 +104,7 @@ GENERATE_LPMAKE_OPT()
 FILE_NAME="ExtremeROM_${ROM_CODENAME}_${ROM_VERSION}_$(date +%Y%m%d)_${TARGET_CODENAME}"
 # ]
 
-echo "Set up tmp dir"
+LOG "- Set up tmp dir"
 mkdir -p "$TMP_DIR"
 
 while read -r i; do
@@ -112,15 +114,16 @@ while read -r i; do
     [ -f "$TMP_DIR/$PARTITION.img" ] && rm -f "$TMP_DIR/$PARTITION.img"
     [ -f "$WORK_DIR/$PARTITION.img" ] && rm -f "$WORK_DIR/$PARTITION.img"
 
-    echo "Building $PARTITION.img"
-    if [[ "$PARTITION" == "prism" || "$PARTITION" == "optics" ]]; then
+    LOG_STEP_IN "- Building $PARTITION.img"
+    if [[ "$PARTITION" == "system" || "$PARTITION" == "prism" || "$PARTITION" == "optics" ]]; then
         FILESYSTEM_TYPE="ext4"
     else
         FILESYSTEM_TYPE="$TARGET_OS_FILE_SYSTEM"
     fi
     bash "$SRC_DIR/scripts/build_fs_image.sh" "$TARGET_OS_FILE_SYSTEM" "$WORK_DIR/$PARTITION" \
-        "$WORK_DIR/configs/file_context-$PARTITION" "$WORK_DIR/configs/fs_config-$PARTITION" > /dev/null 2>&1
+        "$WORK_DIR/configs/file_context-$PARTITION" "$WORK_DIR/configs/fs_config-$PARTITION" 
     mv "$WORK_DIR/$PARTITION.img" "$TMP_DIR/$PARTITION.img"
+    LOG_STEP_OUT
 done <<< "$(find "$WORK_DIR" -mindepth 1 -maxdepth 1 -type d)"
 
 if [ "$TARGET_SUPER_PARTITION_SIZE" -ne 0 ]; then
@@ -141,26 +144,18 @@ while read -r i; do
     cp -a --preserve=all "$i" "$TMP_DIR/$IMG"
 done <<< "$(find "$WORK_DIR/kernel" -mindepth 1 -maxdepth 1 -type f -name "*.img")"
 
-if ! $DEBUG; then
-    for i in "$TMP_DIR"/*.img; do
-        echo "Compressing $(basename "$i")"
+for i in "$TMP_DIR"/*.img; do
+        LOG "- Compressing $(basename "$i")"
         [ -f "$i.lz4" ] && rm -f "$i.lz4"
         lz4 -B6 --content-size -q --rm "$i" "$i.lz4" &> /dev/null
-    done
-fi
+done
 
-echo "Creating tar"
+
+LOG "- Creating tar"
 [ -f "$OUT_DIR/$FILE_NAME.tar" ] && rm -f "$OUT_DIR/$FILE_NAME.tar"
 cd "$TMP_DIR" ; tar -c --format=gnu -f "$OUT_DIR/$FILE_NAME.tar" -- *.lz4 ; cd - &> /dev/null
 
-echo "Generating checksum"
-[ -f "$OUT_DIR/$FILE_NAME.tar.md5" ] && rm -f "$OUT_DIR/$FILE_NAME.tar.md5"
-CHECKSUM="$(md5sum "$OUT_DIR/$FILE_NAME.tar" | cut -d " " -f 1 | sed 's/ //')"
-echo -n "$CHECKSUM" >> "$OUT_DIR/$FILE_NAME.tar" \
-    && echo "  $FILE_NAME.tar" >> "$OUT_DIR/$FILE_NAME.tar" \
-    && mv "$OUT_DIR/$FILE_NAME.tar" "$OUT_DIR/$FILE_NAME.tar.md5"
-
-echo "Deleting tmp dir"
+echo "- Deleting tmp dir"
 rm -rf "$TMP_DIR"
 
 exit 0
