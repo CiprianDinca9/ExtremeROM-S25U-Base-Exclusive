@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [beyond0lte, beyond1lte, beyond2lte, beyondx, x1s, y2s, z3s, c1s, c2s, r8s, o1s, t2s, p3s, r9s, r0s, b0s, g0s]
+        target: [beyond2lte, z3s, g0s]
 
     steps:
       - name: Checkout repo
@@ -86,9 +86,9 @@ jobs:
 
       - name: Upload to GitHub Actions Artifacts
         run: |
-          FILE=$(find out -maxdepth 1 -type f -name "*.tar.md5" | head -n 1)
+          FILE=$(find out -maxdepth 1 -type f -name "*.tar" | head -n 1)
           echo "Uploading $FILE as artifact..."
-          ARTIFACT_NAME=$(basename "$FILE" .tar.md5)
+          ARTIFACT_NAME=$(basename "$FILE" .tar)
           echo "Artifact name: $ARTIFACT_NAME"
           echo "file=$FILE" >> "$GITHUB_ENV"
           echo "artifact_name=$ARTIFACT_NAME" >> "$GITHUB_ENV"
