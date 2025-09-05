@@ -84,11 +84,10 @@ jobs:
           source ./buildenv.sh ${{ matrix.target }}
           ./scripts/make_rom.sh --force
 
-      - name: Upload shallow output files only
+      - name: Upload ROM tar
         uses: actions/upload-artifact@v4
         with:
-          name: output-folder
-          path: |
-            out/*  
+          name: ExtremeROM TAR
+          path: out/*.tar
 
 
