@@ -4,13 +4,13 @@
 #
 /system/framework/framework.jar
 0
-(/system/framework/framework-graphics.jar35
+(/system/framework/framework-graphics.jar36
 0
-(/system/framework/framework-graphics.jar35
+(/system/framework/framework-graphics.jar36
 0
-(/system/framework/framework-location.jar35
+(/system/framework/framework-location.jar36
 0
-(/system/framework/framework-location.jar35
+(/system/framework/framework-location.jar36
 
 /system/framework/ext.jar
 
@@ -35,10 +35,18 @@ $
 4/system/framework/com.samsung.android.uwb_extras.jar
 8
 4/system/framework/com.samsung.android.uwb_extras.jar
+=
+5/system/framework/framework-platformcrashrecovery.jar36
+=
+5/system/framework/framework-platformcrashrecovery.jar36
+E
+=/system/framework/framework-ondeviceintelligence-platform.jar36
+E
+=/system/framework/framework-ondeviceintelligence-platform.jar36
 +
-#/system/framework/framework-nfc.jar35
+#/system/framework/framework-nfc.jar36
 +
-#/system/framework/framework-nfc.jar35
+#/system/framework/framework-nfc.jar36
 !
 /system/framework/esecomm.jar
 !

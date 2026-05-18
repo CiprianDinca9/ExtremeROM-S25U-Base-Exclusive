@@ -1,3 +1,8 @@
+on post-fs-data
+    write /proc/sys/net/ipv4/ipfrag_high_thresh 20971520
+    write /proc/sys/net/ipv6/ip6frag_high_thresh 20971520
+    write /proc/sys/net/netfilter/nf_conntrack_frag6_high_thresh 20971520
+
 on property:sys.boot_completed=1
     write /sys/module/tcp_cubic/parameters/hystart 0
 	setprop sys.tcp_cubic.hystart 0
