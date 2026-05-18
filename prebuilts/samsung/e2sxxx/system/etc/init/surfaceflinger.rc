@@ -11,6 +11,7 @@ service surfaceflinger /system/bin/surfaceflinger
     onrestart restart vendor.hwcomposer-3
     onrestart restart ExynosHWCServiceTW
     task_profiles HighPerformance GpisSfCpusetJoin
-    socket pdx/system/vr/display/client     stream 0666 system graphics u:object_r:pdx_display_client_endpoint_socket:s0
-    socket pdx/system/vr/display/manager    stream 0666 system graphics u:object_r:pdx_display_manager_endpoint_socket:s0
-    socket pdx/system/vr/display/vsync      stream 0666 system graphics u:object_r:pdx_display_vsync_endpoint_socket:s0
+
+# SEC_GC_CMN_LAYER_DUMP
+on boot
+    mkdir /data/log/SF_Dump 0771 system graphics

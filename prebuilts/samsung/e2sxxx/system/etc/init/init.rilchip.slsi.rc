@@ -13,15 +13,6 @@ service SMD-daemon /system/bin/smdexe
     user root
     group system radio inet net_raw
 
-# DIAG
-service DIAG-daemon /system/bin/diagexe
-    class main
-    user root
-    group system radio inet net_raw sdcard_rw sdcard_r media_rw everybody
-
-on property:telephony.lteOnCdmaDevice=1
-    start VC-daemon
-
 on early-boot
 # Assign TCP buffer thresholds to be ceiling value of technology maximums
 # Increased technology maximums should be reflected here.
